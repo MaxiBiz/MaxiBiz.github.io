@@ -1,88 +1,95 @@
-let currentMultiplier = 1.00;
-let crashPoint;
-let gameInterval;
-let countdownInterval;
-let timeLeft = 45;
-let betPlaced = false;
-let betAmount = 0;
+document.addEventListener('DOMContentLoaded', function() {
+            const placeBetButton = document.getElementById('place-bet');
+            const startGameButton = document.getElementById('start-game');
+            const stopGameButton = document.getElementById('stop-game');
+            const betAmountInput = document.getElementById('bet-amount');
+            const graphArea = document.getElementById('graph');
+            let gameInterval = null;
+            let isGameRunning = false;
+            let hasUserStopped = false;
 
-// Phantom Wallet SDK integration
-const { PhantomWalletAdapter } = window['@solana/wallet-adapter-phantom'];
-const wallet = new PhantomWalletAdapter();
+            placeBetButton.addEventListener('click', function() {
+                const betAmount = parseFloat(betAmountInput.value);
+                if (isNaN(betAmount) || betAmount <= 0) {
+                    alert('Please enter a valid bet amount.');
+                    return;
+                }
+                betAmountInput.disabled = true;
+                placeBetButton.disabled = true;
+                startGameButton.disabled = false;
+            });
 
-async function connectWallet() {
-    await wallet.connect();
-    console.log('Wallet connected:', wallet.publicKey.toString());
-}
+            startGameButton.addEventListener('click', function() {
+                startGame();
+                startGameButton.disabled = true;
+                stopGameButton.disabled = false;
+                isGameRunning = true;
+                hasUserStopped = false;
+            });
 
-async function placeBet() {
-    if (!wallet.connected) {
-        await connectWallet();
-    }
-    
-    betAmount = parseFloat(document.getElementById('bet-amount').value);
-    if (isNaN(betAmount) || betAmount <= 0) {
-        alert('Please enter a valid bet amount');
-        return;
-    }
+            stopGameButton.addEventListener('click', function() {
+                isGameRunning = false;
+                hasUserStopped = true;
+                clearInterval(gameInterval);
+                graphArea.style.color = 'green';
+                stopGameButton.disabled = true;
+            });
 
-    betPlaced = true;
-    document.getElementById('betButton').disabled = true;
-    document.getElementById('cashoutButton').disabled = false;
-    document.getElementById('message').innerText = 'Bet placed! Waiting for the right time to cash out...';
-}
+            function startGame() {
+                let multiplier = 1.00;
+                graphArea.textContent = '1.00x';
+                graphArea.style.color = '#fff';
+                const crashPoint = Math.pow(Math.random(), 2) * 15 + 1;
+                console.log('Crash Point:', crashPoint.toFixed(2) + 'x');
 
-function cashOut() {
-    if (betPlaced && currentMultiplier < crashPoint) {
-        const payout = betAmount * currentMultiplier;
-        document.getElementById('message').innerText = `Cashed out at ${currentMultiplier.toFixed(2)}x! You win ${payout.toFixed(2)}!`;
-        resetGame();
-    } else {
-        document.getElementById('message').innerText = `Missed the cash out! The game crashed at ${crashPoint}x.`;
-    }
-}
+                gameInterval = setInterval(function() {
+                    if (!isGameRunning) return;
+                    multiplier += Math.random() * 0.05 + 0.01;
+                    graphArea.textContent = multiplier.toFixed(2) + 'x';
+                    if (multiplier >= crashPoint) {
+                        endGame(multiplier);
+                    }
+                }, 100);
+            }
 
-function startGame() {
-    resetGame();
-    crashPoint = (Math.random() * 10 + 1).toFixed(2);
-    gameInterval = setInterval(updateMultiplier, 100);
-}
+            function endGame(multiplier) {
+                clearInterval(gameInterval);
+                isGameRunning = false;
+                if (!hasUserStopped) {
+                    graphArea.textContent = "Crashed at " + multiplier.toFixed(2) + 'x';
+                    graphArea.style.color = 'red';
+                }
+                resetGame();
+            }
 
-function updateMultiplier() {
-    currentMultiplier += 0.01;
-    document.getElementById('multiplier').innerText = `${currentMultiplier.toFixed(2)}x`;
+            function resetGame() {
+                betAmountInput.disabled = false;
+                placeBetButton.disabled = false;
+                startGameButton.disabled = true;
+                stopGameButton.disabled = true;
+            }
 
-    if (currentMultiplier >= crashPoint) {
-        clearInterval(gameInterval);
-        document.getElementById('message').innerText = `Crashed at ${crashPoint}x!`;
-        resetGame();
-    }
-}
+            // Function to handle authorization callback
+            function handleAuthorizationCallback() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
 
-function resetGame() {
-    clearInterval(gameInterval);
-    clearInterval(countdownInterval);
-    document.getElementById('betButton').disabled = false;
-    document.getElementById('cashoutButton').disabled = true;
-    betPlaced = false;
-    currentMultiplier = 1.00;
-    timeLeft = 45;
-    startCountdown();
-}
+                if (code) {
+                    // Exchange authorization code for access token using server-side code
+                    // This step requires server-side implementation
+                    // Upon successful exchange, proceed with betting logic using the access token
+                    // For now, let's just log the code
+                    console.log('Authorization code:', code);
+                } else {
+                    console.error('Authorization code not found.');
+                }
+            }
 
-function startCountdown() {
-    countdownInterval = setInterval(updateCountdown, 1000);
-}
+            // Call the function to handle authorization callback when the page loads
+            handleAuthorizationCallback();
 
-function updateCountdown() {
-    timeLeft -= 1;
-    document.getElementById('countdown').innerText = `Next round in: ${timeLeft}s`;
-
-    if (timeLeft <= 0) {
-        clearInterval(countdownInterval);
-        startGame();
-    }
-}
-
-// Initial countdown to start the game
-startCountdown();
+            document.getElementById('connect-coinbase').addEventListener('click', function() {
+                // Redirect the user to Coinbase OAuth2 authorization page
+                window.location.href = 'https://www.coinbase.com/oauth/authorize?client_id=YOUR_CLIENT_ID&response_type=code&redirect_uri=YOUR_REDIRECT_URI&scope=wallet:accounts:read';
+            });
+        });
