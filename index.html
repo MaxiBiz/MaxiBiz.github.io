@@ -1,42 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        /* Game Container */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        header h1, header button {
+            color: #f7931a; /* Bitcoin Orange */
+            font-size: 2em;
+        }
+
+        header button {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        header button:hover {
+            background-color: #f7931a;
+            color: #000;
+        }
+
+        /* Betting Area */
+        .betting-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .betting-area label, .betting-area input, .betting-area button {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .betting-area input {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+        }
+
+        .betting-area button {
+            background-color: #f7931a;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .betting-area button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+
+        .betting-area button:hover:not(:disabled) {
+            background-color: #ffc107;
+        }
+
+        /* Graph Area */
+        .graph-area {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 2em;
+            margin: auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        /* Chat Area Styles */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            background-color: #333;
+            border: 1px solid #555;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-messages {
+            height: 150px;
+            overflow-y: auto;
+            background-color: #121212;
+            border: 1px solid #444;
+            padding: 5px;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-container input, .chat-input-container button {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-input-container input {
+            flex-grow: 1;
+            background-color: #222;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        .chat-input-container button {
+            background-color: #f7931a;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-input-container button:hover {
+            background-color: #ffc107;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9em;
+        }
+
+        footer p {
+            color: #aaa;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bustabit Clone</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Bitcoin Crash Game</title>
 </head>
 <body>
-    <div class="container">
+    <div class="game-container">
         <header>
-            <h1>Bustabit Clone</h1>
+            <h1>Bitcoin Crash Game</h1>
+            <button id="connect-coinbase">Connect Coinbase</button>
         </header>
         <main>
-            <div id="game-area">
-                <div id="multiplier">1.00x</div>
-                <div id="countdown">Next round in: 45s</div>
-                <div class="buttons">
-                    <input type="number" id="bet-amount" placeholder="Bet Amount">
-                    <button id="betButton" onclick="placeBet()">Place Bet</button>
-                    <button id="cashoutButton" onclick="cashOut()" disabled>Cash Out</button>
-                </div>
-                <div id="message"></div>
+            <div class="betting-area">
+                <label for="bet-amount">Bet Amount:</label>
+                <input type="number" id="bet-amount" placeholder="0.0001 BTC">
+                <button id="place-bet">Place Bet</button>
+                <button id="start-game" disabled>Start</button>
+                <button id="stop-game" disabled>Stop</button>
             </div>
-            <div id="sidebar">
-                <div id="chat-room">
-                    <h2>Chat Room</h2>
-                    <div id="chat-messages"></div>
-                    <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="sendMessage(event)">
-                </div>
-                <div id="leaderboard">
-                    <h2>Leaderboard</h2>
-                    <div id="live-bets"></div>
-                    <div id="top-players"></div>
+            <div class="graph-area" id="graph">0.00x</div>
+            <!-- Chat Area -->
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Type a message...">
+                    <button id="send-message">Send</button>
                 </div>
             </div>
         </main>
+        <footer>
+            <p>Play responsibly. Real Bitcoin is used in this game.</p>
+        </footer>
     </div>
-    <script src="scripts.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-phantom@0.10.0/dist/index.iife.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const placeBetButton = document.getElementById('place-bet');
+            const startGameButton = document.getElementById('start-game');
+            const stopGameButton = document.getElementById('stop-game');
+            const betAmountInput = document.getElementById('bet-amount');
+            const graphArea = document.getElementById('graph');
+            let gameInterval = null;
+            let isGameRunning = false;
+            let hasUserStopped = false;
+
+            placeBetButton.addEventListener('click', function() {
+                const betAmount = parseFloat(betAmountInput.value);
+                if (isNaN(betAmount) || betAmount <= 0) {
+                    alert('Please enter a valid bet amount.');
+                    return;
+                }
+                betAmountInput.disabled = true;
+                placeBetButton.disabled = true;
+                startGameButton.disabled = false;
+            });
+
+            startGameButton.addEventListener('click', function() {
+                startGame();
+                startGameButton.disabled = true;
+                stopGameButton.disabled = false;
+                isGameRunning = true;
+                hasUserStopped = false;
+            });
+
+            stopGameButton.addEventListener('click', function() {
+                isGameRunning = false;
+                hasUserStopped = true;
+                clearInterval(gameInterval);
+                graphArea.style.color = 'green';
+                stopGameButton.disabled = true;
+            });
+
+            function startGame() {
+                let multiplier = 1.00;
+                graphArea.textContent = '1.00x';
+                graphArea.style.color = '#fff';
+                const crashPoint = Math.pow(Math.random(), 2) * 15 + 1;
+                console.log('Crash Point:', crashPoint.toFixed(2) + 'x');
+
+                gameInterval = setInterval(function() {
+                    if (!isGameRunning) return;
+                    multiplier += Math.random() * 0.05 + 0.01;
+                    graphArea.textContent = multiplier.toFixed(2) + 'x';
+                    if (multiplier >= crashPoint) {
+                        endGame(multiplier);
+                    }
+                }, 100);
+            }
+
+            function endGame(multiplier) {
+                clearInterval(gameInterval);
+                isGameRunning = false;
+                if (!hasUserStopped) {
+                    graphArea.textContent = "Crashed at " + multiplier.toFixed(2) + 'x';
+                    graphArea.style.color = 'red';
+                }
+                resetGame();
+            }
+
+            function resetGame() {
+                betAmountInput.disabled = false;
+                placeBetButton.disabled = false;
+                startGameButton.disabled = true;
+                stopGameButton.disabled = true;
+            }
+
+            // Function to handle authorization callback
+            function handleAuthorizationCallback() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+
+                if (code) {
+                    // Exchange authorization code for access token using server-side code
+                    // This step requires server-side implementation
+                    // Upon successful exchange, proceed with betting logic using the access token
+                    // For now, let's just log the code
+                    console.log('Authorization code:', code);
+                } else {
+                    console.error('Authorization code not found.');
+                }
+            }
+
+            // Call the function to handle authorization callback when the page loads
+            handleAuthorizationCallback();
+
+            document.getElementById('connect-coinbase').addEventListener('click', function() {
+                // Redirect the user to Coinbase OAuth2 authorization page
+                window.location.href = 'https://www.coinbase.com/oauth/authorize?client_id=YOUR_CLIENT_ID&response_type=code&redirect_uri=YOUR_REDIRECT_URI&scope=wallet:accounts:read';
+            });
+        });
+    </script>
 </body>
 </html>
