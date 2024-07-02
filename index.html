@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bustabit Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bustabit Clone</h1>
+        </header>
+        <main>
+            <div id="game-area">
+                <div id="multiplier">1.00x</div>
+                <div id="countdown">Next round in: 45s</div>
+                <div class="buttons">
+                    <input type="number" id="bet-amount" placeholder="Bet Amount">
+                    <button id="betButton" onclick="placeBet()">Place Bet</button>
+                    <button id="cashoutButton" onclick="cashOut()" disabled>Cash Out</button>
+                </div>
+                <div id="message"></div>
+            </div>
+            <div id="sidebar">
+                <div id="chat-room">
+                    <h2>Chat Room</h2>
+                    <div id="chat-messages"></div>
+                    <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="sendMessage(event)">
+                </div>
+                <div id="leaderboard">
+                    <h2>Leaderboard</h2>
+                    <div id="live-bets"></div>
+                    <div id="top-players"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-phantom@0.10.0/dist/index.iife.js"></script>
+</body>
+</html>
