@@ -1,88 +1,162 @@
-/* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-}
+  /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.container {
-    width: 80%;
-    margin: 0 auto;
-    text-align: center;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+        }
 
-header {
-    margin-bottom: 20px;
-}
+        /* Game Container */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 20px;
+        }
 
-#game-area {
-    margin: 20px 0;
-}
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
 
-#multiplier {
-    font-size: 2em;
-    margin-bottom: 10px;
-}
+        header h1, header button {
+            color: #f7931a; /* Bitcoin Orange */
+            font-size: 2em;
+        }
 
-#countdown {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-    color: green;
-}
+        header button {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.buttons {
-    margin: 10px 0;
-}
+        header button:hover {
+            background-color: #f7931a;
+            color: #000;
+        }
 
-#bet-amount {
-    margin-right: 10px;
-    padding: 5px;
-    font-size: 1em;
-}
+        /* Betting Area */
+        .betting-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-button {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-}
+        .betting-area label, .betting-area input, .betting-area button {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+        }
 
-#message {
-    margin: 10px 0;
-    color: red;
-}
+        .betting-area input {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+        }
 
-#sidebar {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
+        .betting-area button {
+            background-color: #f7931a;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-#chat-room, #leaderboard {
-    width: 45%;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
+        .betting-area button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
 
-h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-}
+        .betting-area button:hover:not(:disabled) {
+            background-color: #ffc107;
+        }
 
-#chat-messages {
-    height: 200px;
-    overflow-y: scroll;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    padding: 5px;
-}
+        /* Graph Area */
+        .graph-area {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 2em;
+            margin: auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
 
-#chat-input {
-    width: calc(100% - 10px);
-    padding: 5px;
-    font-size: 1em;
-}
+        /* Chat Area Styles */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            background-color: #333;
+            border: 1px solid #555;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-messages {
+            height: 150px;
+            overflow-y: auto;
+            background-color: #121212;
+            border: 1px solid #444;
+            padding: 5px;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-container input, .chat-input-container button {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-input-container input {
+            flex-grow: 1;
+            background-color: #222;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        .chat-input-container button {
+            background-color: #f7931a;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-input-container button:hover {
+            background-color: #ffc107;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.9em;
+        }
+
+        footer p {
+            color: #aaa;
+        }
